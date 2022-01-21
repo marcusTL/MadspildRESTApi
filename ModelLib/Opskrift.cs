@@ -7,16 +7,16 @@ namespace ModelLib
     {
         private int _id;
         private string _navn;
-        private string _fremgangsmåde;
+        private string _fremgangsmaade;
         private int _tid;
         private string _billede;
         private List<string> _ingredienser;
 
-        public Opskrift(int id, string navn, string fremgangsmåde, int tid, string billede, List<string> ingredienser)
+        public Opskrift(int id, string navn, string fremgangsmaade, int tid, string billede, List<string> ingredienser)
         {
             _id = id;
             _navn = navn;
-            _fremgangsmåde = fremgangsmåde;
+            _fremgangsmaade = fremgangsmaade;
             _tid = tid;
             _ingredienser = ingredienser;
             _billede = billede;
@@ -38,10 +38,10 @@ namespace ModelLib
             set => _navn = value;
         }
 
-        public string Fremgangsmåde
+        public string Fremgangsmaade
         {
-            get => _fremgangsmåde;
-            set => _fremgangsmåde = value;
+            get => _fremgangsmaade;
+            set => _fremgangsmaade = value;
         }
 
         public int Tid
@@ -65,7 +65,7 @@ namespace ModelLib
         
         public override string ToString()
         {
-            return $"{_id},{_navn},{_fremgangsmåde},{_tid}, {_billede}, {_ingredienser}";
+            return $"{_id},{_navn},{_fremgangsmaade},{_tid}, {_billede}, {_ingredienser}";
         }
     }
 }

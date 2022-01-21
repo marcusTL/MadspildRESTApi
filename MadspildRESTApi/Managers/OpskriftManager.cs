@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ModelLib;
 
 
@@ -35,7 +36,7 @@ namespace MadspildRESTApi.Managers
 
             //Finished, the sql adds to both the tables, becaouse the ing* columns allow null
             //the web app dosent need to take into account the every column of ingredients.
-            INSERT = $"Insert into {tableName}(navn, fremgangsmåde,tid, billede)values('@Navn','@fremgangsmåde',@tid,'@billede')" +
+            INSERT = $"Insert into {tableName}(navn, fremgangsmaade,tid, billede)values('@Navn','@fremgangsmaade',@tid,'@billede')" +
                      $"INSERT INTO {secondtable}(ingredienserId, ing1, ing2, ing3, ing4, ing5,ing6,ing7, ing8, ing9, ing10)" +
                      $"VALUES ((SELECT opskrifterId FROM {secondtable} WHERE opskrifterId = )," +
                      $"'@Ingredienser[0]', '@Ingredienser[1]', '@Ingredienser[2]', '@Ingredienser[3]','@Ingredienser[4]', " +
@@ -43,6 +44,8 @@ namespace MadspildRESTApi.Managers
 
             DELETE = $"delete from {tableName} where opskrifterIdid = @Id" +
                      $"delete from {secondtable} where ingredienserId = @Id";
+
+            //IQueryable<Opskrift> getByQuery = from n in tableName();
         }
         
         private Opskrift ReadNextElement(SqlDataReader reader)
@@ -51,7 +54,7 @@ namespace MadspildRESTApi.Managers
 
             opskrift.Id = reader.GetInt32(0);
             opskrift.Navn = reader.GetString(1);
-            opskrift.Fremgangsmåde = reader.GetString(2);
+            opskrift.Fremgangsmaade = reader.GetString(2);
             opskrift.Tid = reader.GetInt32(3);
             opskrift.Billede = reader.GetString(4);
             return opskrift;
@@ -69,18 +72,23 @@ namespace MadspildRESTApi.Managers
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    bool check = false;
-                    while (check == false)
+                    while (true)
                     {
                         column++;
+                        if (column == reader.FieldCount)
+                        {
+                            break;
+                        }
+
                         if (!reader.IsDBNull(column))
                         {
                             ingredienser.Add(reader.GetString(column));
                         }
                         else
                         {
-                            check = true;
+                            break;
                         }
+
                     }
                 }
                 reader.Close();
@@ -156,7 +164,7 @@ namespace MadspildRESTApi.Managers
                 conn.Open();
                 cmd.Parameters.AddWithValue("@Id", opskrift.Id);
                 cmd.Parameters.AddWithValue("@Navn", opskrift.Navn);
-                cmd.Parameters.AddWithValue("@Fremgangsmåde", opskrift.Fremgangsmåde);
+                cmd.Parameters.AddWithValue("@Fremgangsmaade", opskrift.Fremgangsmaade);
                 cmd.Parameters.AddWithValue("@Tid", opskrift.Tid);
                 cmd.Parameters.AddWithValue("@Billede", opskrift.Billede);
                 cmd.Parameters.AddWithValue("@Ingredienser", opskrift.Ingredienser);
